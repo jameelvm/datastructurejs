@@ -119,6 +119,7 @@
           this.items.push(queueElement);
         }
       }
+      return this;
     },
     dequeue: function () {
       //this.items.shift() method also used to remove first element from an array
@@ -161,6 +162,7 @@
         current.next = node;
       }
       this.length++;
+      return this;
     },
     size: function () {
       return this.length;
@@ -184,7 +186,7 @@
         }
       }
 
-
+return this;
 
     },
     insert: function (position, element) {
@@ -211,6 +213,7 @@
       } else {
         return false;
       }
+      return this;
     },
     indexOf: function (element) {
       var index = 0;
