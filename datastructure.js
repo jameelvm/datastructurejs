@@ -232,9 +232,6 @@
     isEmpty: function (element) {
       return this.length === 0;
     },
-    size: function () {
-      return this.length;
-    },
     getHead: function () {
       return this.head;
     },
@@ -373,9 +370,6 @@
     isEmpty: function (element) {
       return this.length === 0;
     },
-    size: function () {
-      return this.length;
-    },
     getHead: function () {
       return this.head;
     },
@@ -501,9 +495,6 @@
     isEmpty: function (element) {
       return this.length === 0;
     },
-    size: function () {
-      return this.length;
-    },
     getHead: function () {
       return this.head;
     },
@@ -520,6 +511,7 @@
       return str;
     }
   };
+
   CircularLinkedList.initialize = function () {
     this.Node = function (element) {
       this.element = element;
@@ -578,14 +570,14 @@
       }
       return true;
     },
-    differentSet: function (otherSet) {
-      var difference = [];
+    difference: function (otherSet) {
+      var differentSet = [];
       for (var i = 0; i < this.items.length; i++) {
         if (!otherSet.has(this.items[i])) {
-          difference.push(this.items[i]);
+          differentSet.push(this.items[i]);
         }
       }
-      return difference;
+      return differentSet;
     },
     remove: function (value) {
       if (this.has(value)) {
