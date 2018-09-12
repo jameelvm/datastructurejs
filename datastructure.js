@@ -14,11 +14,12 @@
       return this;
     },
     pop: function () {
+      var item;
       if (this.count > 0) {
-        this.items.splice(this.items.length - 1, 1);
+         item = this.items.splice(this.items.length - 1, 1);
         this.count = this.count - 1;
       }
-      return this;
+      return item;
     },
     peek: function () {
       var item = null;
@@ -68,8 +69,8 @@
     },
     dequeue: function () {
       //this.items.shift().Shift() method also used to remove first element from an array
-      this.items.splice(0, 1);
-      return this;
+      var item = this.items.splice(0, 1);
+      return item[0];
     },
     front: function () {
       return this.items[0];
@@ -399,7 +400,6 @@
   DoublyLinkedList.initialize.prototype = DoublyLinkedList.prototype;
   global.DoublyLinkedList = DoublyLinkedList;
 
-
   var CircularLinkedList = function () {
     return new CircularLinkedList.initialize();
   };
@@ -528,7 +528,6 @@
   var Set = function () {
     return new Set.initialize();
   };
-
   Set.prototype = {
     add: function (value) {
       if (!this.has(value)) {
@@ -605,7 +604,367 @@
   };
   Set.initialize = function () {
     this.items = [];
-  }
+  };
   Set.initialize.prototype = Set.prototype;
   global.Set = Set;
+
+  var Dictionary = function () {
+    return new Dictionary.initialize();
+  };
+  Dictionary.prototype = {
+    add: function (key, value) {
+      if (!this.has(key)) {
+
+        this.items[key] = value;
+      }
+    },
+    remove: function (key) {
+      if (this.has(key)) {
+        delete this.items[key];
+        return true;
+      }
+      return false;
+    },
+    has: function (key) {
+      var hasKey = key in this.items;
+      return hasKey;
+    },
+    get: function (key) {
+      return this.has(key) ? this.items[key] : undefined;
+    },
+    clear: function () {
+      this.items = [];
+    },
+    size: function () {
+      return this.items.length;
+    },
+    getKeys: function () {
+      var allKeys = [];
+      for (var item in this.items) {
+        debugger;
+        allKeys.push(item);
+      }
+      return allKeys;
+    },
+    getValues: function () {
+      var allValues = [];
+      for (var item in this.items) {
+        allValues.push(this.items[item]);
+      }
+      return allValues;
+    },
+    getItems: function () {
+      return this.items;
+    }
+  };
+  Dictionary.initialize = function () {
+    this.DictionaryItem = function (key, value) {
+      this.key = key;
+      this.value = value;
+    };
+    this.items = [];
+  };
+  Dictionary.initialize.prototype = Dictionary.prototype;
+  global.Dictionary = Dictionary;
+
+  var HashTable = function () {
+    return new HashTable.initialize();
+  };
+
+  HashTable.prototype = {
+    getHashCode: function (key) {
+      var hash = 0;
+      for (var i = 0; i < key.length; i++) {
+        hash += key.charCodeAt(i) * i;
+      }
+      return hash;
+    },
+    add: function (key, value) {
+      var keyHash = this.getHashCode(key);
+      if (!this.table[keyHash]) {
+        this.length++;
+      }
+      this.table[keyHash] = value;
+    },
+    remove: function (key) {
+      delete this.table[this.getHashCode(key)];
+    },
+    get: function (key) {
+      return this.table[this.getHashCode(key)];
+    },
+    size: function () {
+      return this.length;
+    },
+    clear: function () {
+      this.table = [];
+    },
+    containsKey: function (key) {
+      var keyHash = this.getHashCode(key);
+      if (this.table[keyHash]) {
+        return true;
+      }
+      return false;
+    },
+    containsValue: function (value) {
+      for (var prop in this.table) {
+        if (this.table[prop] === value) {
+          return true;
+        }
+      }
+      return false;
+    },
+    values: function () {
+      return this.table;
+    }
+  };
+  HashTable.initialize = function () {
+    this.table = [];
+    this.length = 0;
+  };
+  HashTable.initialize.prototype = HashTable.prototype;
+  global.HashTable = HashTable;
+
+  var BinarySearchTree = function () {
+    return new BinarySearchTree.initialize();
+  };
+  BinarySearchTree.prototype = {
+    insertNode: function (newNode, node) {
+      if (newNode.key < node.key) {
+        //left node
+        if (node.left === null) {
+          node.left = newNode;
+        } else {
+          this.insertNode(newNode, node.left);
+        }
+      } else {
+        if (node.right === null) {
+          node.right = newNode;
+        } else {
+          this.insertNode(newNode, node.right);
+        }
+      }
+    },
+    insert: function (key) {
+      var newNode = new this.Node(key);
+      if (this.root === null) {
+        this.root = newNode;
+      } else {
+        this.insertNode(newNode, this.root);
+      }
+      this.length++;
+    }, //5,3,9
+    inOrderTraverse: function (callback) {
+      this.inOrderTraverseNode(this.root, callback);
+    },
+    inOrderTraverseNode: function (node, callback) {
+      if (node !== null) {
+        this.inOrderTraverseNode(node.left, callback);
+        callback(node.key);
+        this.inOrderTraverseNode(node.right, callback);
+      }
+    },
+    preOrderTraverse: function (callback) {
+      this.preOrderTraverseNode(this.root, callback);
+    },
+    preOrderTraverseNode: function (node, callback) {
+      if (node !== null) {
+        callback(node.key);
+        this.preOrderTraverseNode(node.left, callback);
+        this.preOrderTraverseNode(node.right, callback);
+      }
+    },
+    postOrderTraverse: function (callback) {
+      this.postOrderTraverseNode(this.root, callback);
+    },
+    postOrderTraverseNode: function (node, callback) {
+      console.log(node, callback);
+      if (node !== null) {
+        this.postOrderTraverseNode(node.left, callback);
+        this.postOrderTraverseNode(node.right, callback);
+        callback(node.key);
+      }
+    },
+    minNode: function (node) {
+      if (node !== null) {
+        while (node && node.left !== null) {
+          node = node.left;
+        }
+        return node;
+      } else {
+        return null;
+      }
+    },
+    min: function () {
+      var minNode = this.minNode(this.root);
+      if (minNode !== null) {
+        return minNode.key;
+      }
+      return null;
+    },
+    maxNode: function (node) {
+      if (node !== null) {
+        while (node && node.right !== null) {
+          node = node.right;
+        }
+        return node;
+      } else {
+        return null;
+      }
+    },
+    max: function () {
+      var maxNode = this.maxNode(this.root);
+      if (maxNode !== null) {
+        return maxNode.key;
+      }
+      return null;
+    },
+    search: function (key) {
+      return this.searchNode(this.root, key);
+    },
+    searchNode: function (root, key) {
+      var node = root;
+      if (node === null) {
+        return false;
+      } else {
+        if (key < node.key) {
+          return this.searchNode(node.left, key);
+        } else if (key > node.key) {
+          return this.searchNode(node.right, key);
+        } else {
+          return true;
+        }
+      }
+    },
+    remove: function (key) {
+      this.removeNode(this.root, key);
+    },
+    removeNode: function (node, key) {
+      //condition 1 - check if node===null
+      //condition 1 - key < node.key
+      //Condition 2 - key > node.key
+      //Condition 3
+      //Condition 1  node.left==null && node.right===null
+      //Condition 2 node.left==null
+      //Condition 3 node.right===null
+      //Condition  both nodes are not empty
+      if (node === null) {
+        return null;
+      } else {
+        if (key < node.key) {
+          node.left = this.removeNode(node.left, key);
+          return node;
+        } else if (key > node.key) {
+          node.right = this.removeNode(node.right, key);
+          return node;
+        } else {
+          if (node.left === null && node.right === null) {
+            node = null;
+            return node;
+          } else if (node.left === null) {
+            node = node.right;
+            return node;
+          } else if (node.right === null) {
+            node = node.left;
+            return node;
+          } else {
+            var aux = this.minNode(node.right);
+            node.key = aux.key;
+            node.right = this.removeNode(node.right, aux.key);
+
+            //approach2 ,by taking left max node
+            // var aux1 = this.maxNode(node.left);
+            // node.key = aux.key;
+            //node.left=this.removeNode(node.left, aux.key);
+            return node;
+          }
+        }
+      }
+    }
+  };
+  BinarySearchTree.initialize = function () {
+    this.Node = function (key) {
+      this.key = key;
+      this.right = null;
+      this.left = null;
+    };
+    this.root = null;
+    this.length = 0;
+  };
+  BinarySearchTree.initialize.prototype = BinarySearchTree.prototype;
+  global.BinarySearchTree = BinarySearchTree;
+
+  var Graph = function () {
+    return new Graph.initialize();
+  };
+  Graph.prototype = {
+    addVertex: function (v) {
+      this.vertices.push(v);
+      this.adjList.add(v, []);
+    },
+    addEdge: function (v, w) {
+      this.adjList.get(v).push(w);
+      this.adjList.get(w).push(v);
+    },
+    toString: function () {
+      var output = "";
+      for (var i = 0; i < this.vertices.length; i++) {
+        output = output + this.vertices[i] + " --> ";
+        var neighbours = this.adjList.get(this.vertices[i]);
+        for (var j = 0; j < neighbours.length; j++) {
+          output = output + " " + neighbours[j];
+        }
+        output = output + "\n";
+      }
+
+      return output;
+    },
+    initializeColor: function () {
+      var color = [];
+      for (var i = 0; i < this.vertices.length; i++) {
+        color[this.vertices[i]] = "white";
+      }
+      return color;
+    },
+    bfs: function (v, callback) {
+      var colors = this.initializeColor();
+      var queue = Queue();
+      var distance = [];
+      var predecessors = [];
+      for (var i = 0; i < this.vertices.length; i++) {
+        distance[this.vertices[i]] = 0;
+        predecessors[this.vertices[i]] = null;
+
+      }
+      queue.enqueue(v);
+      while (!queue.isEmpty()) {
+        var u = queue.dequeue();
+        var neighbours = this.adjList.get(u);
+        colors[u] = "grey";
+        for (var i = 0; i < neighbours.length; i++) {
+          var w = neighbours[i];
+          if (colors[w] === 'white') {
+            distance[w] = distance[u] + 1;
+            predecessors[w] = u;
+            colors[w] = "grey";
+            queue.enqueue(w);
+          }
+        }
+        colors[u] = 'black';
+        if (callback) {
+          callback(u)
+        }
+      }
+      return {
+        distance: distance,
+        predecessors: predecessors
+      };
+      debugger;
+    }
+  };
+  Graph.initialize = function () {
+    this.vertices = [];
+    this.adjList = new Dictionary();
+  };
+  Graph.initialize.prototype = Graph.prototype;
+  global.Graph = Graph;
 })(window);
